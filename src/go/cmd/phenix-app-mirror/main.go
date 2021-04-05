@@ -408,7 +408,7 @@ func buildMirrorCommand(ns, name, bridge, port string, vms, vlans []string) []st
 	taps := vlanTaps(ns, vms, vlans)
 
 	for idx, tap := range taps {
-		log.Printf("%s %s", id, tap)
+		log.Printf("%s %s", idx, tap)
 		id := fmt.Sprintf("@i%d", idx)
 
 		ids = append(ids, id)
