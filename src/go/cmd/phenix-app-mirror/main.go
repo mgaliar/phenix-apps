@@ -340,7 +340,9 @@ func vlanTaps(ns string, vms, vlans []string) []string {
 		taps  []string
 	)
 
+
 	for _, vm := range vms {
+		log.Printf("%s", vm)
 		vmSet[vm] = struct{}{}
 	}
 
@@ -406,6 +408,7 @@ func buildMirrorCommand(ns, name, bridge, port string, vms, vlans []string) []st
 	taps := vlanTaps(ns, vms, vlans)
 
 	for idx, tap := range taps {
+		log.Printf("%s %s", id, tap)
 		id := fmt.Sprintf("@i%d", idx)
 
 		ids = append(ids, id)
