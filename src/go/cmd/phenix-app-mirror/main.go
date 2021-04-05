@@ -95,7 +95,9 @@ func postStart(exp *types.Experiment) error {
 		monitorIfaceIdx := -1
 		var monitorIfaceBridge string
 
+		log.Printf("%s", md.Interface)
 		for i, iface := range node.Network().Interfaces() {
+			log.Printf("%s %s", i, iface)
 			if iface.Name() == md.Interface {
 				monitorIfaceIdx = i
 				monitorIfaceBridge = iface.Bridge()
