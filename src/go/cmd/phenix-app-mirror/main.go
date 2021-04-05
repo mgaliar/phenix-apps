@@ -387,8 +387,8 @@ func vlanTaps(ns string, vms, vlans []string) []string {
 			log.Printf("in second loop: %s, %s", idx, alias)
 			if match := vlanAliasRegex.FindStringSubmatch(alias); match != nil {
 				// `vlans` will be a slice of VLAN IDs (ie. 101, 102)
-				log.Print("found match")
 				for _, id := range vlans {
+					log.Printf("match[2]: %s, id %s", match[2], id)
 					if match[2] == id {
 						taps = append(taps, vmTaps[idx])
 						break
@@ -398,6 +398,7 @@ func vlanTaps(ns string, vms, vlans []string) []string {
 		}
 	}
 
+	log.Printf("taps: %s", taps)
 	return taps
 }
 
