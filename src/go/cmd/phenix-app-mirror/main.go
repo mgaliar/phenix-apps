@@ -79,20 +79,17 @@ func postStart(exp *types.Experiment) error {
 
 	for _, host := range app.Hosts() {
 		if err := mapstructure.Decode(host.Metadata(), &md); err != nil {
-			// TODO: yell loudly
-			continue
+			log.Fatal("Unable to decode metadata")
 		}
 
 		node := exp.Spec.Topology().FindNodeByName(host.Hostname())
 
 		if node == nil {
-			// TODO: yell loudly
-			continue
+			log.Fatal("node is empty")
 		}
 
 		if md.Interface == "" {
-			// TODO: yell loudly
-			continue
+			log.Fatal("interface is empty")
 		}
 
 		monitorIfaceIdx := -1
@@ -108,15 +105,13 @@ func postStart(exp *types.Experiment) error {
 		}
 
 		if monitorIfaceIdx < 0 {
-			// TODO: yell loudly
-			continue
+			log.Fatal("monitorIfaceIdx is empty")
 		}
 
 		taps := vmTaps(exp.Spec.ExperimentName(), host.Hostname())
 
 		if len(taps) <= monitorIfaceIdx {
-			// TODO: yell loudly
-			continue
+			log.Fatal("taps less than monitorIfaceIdx")
 		}
 
 		monitorTap := taps[monitorIfaceIdx]
@@ -133,27 +128,23 @@ func postStart(exp *types.Experiment) error {
 		scheduled := exp.Status.Schedules()[host.Hostname()]
 
 		if scheduled == "" {
-			// TODO: yell loudly
-			continue
+			log.Fatal("scheduled is empty")
 		}
 
 		ips, _ := net.LookupIP(scheduled)
 
 		if len(ips) < 1 {
-			// TODO: yell loudly
-			continue
+			log.Fatal("ips is empty")
 		}
 
 		remote := ips[0].String()
 
 		if len(cluster) == 0 {
-			// TODO: yell loudly
-			continue
+			log.Fatal("cluster is empty")
 		}
 
 		if _, ok := cluster[scheduled]; !ok {
-			// TODO: yell loudly
-			continue
+			log.Fatal("cluster in not ok")
 		}
 
 		key := rand.Uint32()
@@ -214,6 +205,8 @@ func postStart(exp *types.Experiment) error {
 		}
 
 		command := buildMirrorCommand(exp.Spec.ExperimentName(), host.Hostname(), monitorIfaceBridge, monitorTap, cluster[scheduled], vlans)
+
+		log.Printf("%s", command)
 
 		if err := meshSend(scheduled, strings.Join(command, " -- ")); err != nil {
 			return fmt.Errorf("adding ingress-only mirror %s on cluster host %s: %w", host.Hostname(), scheduled, err)
