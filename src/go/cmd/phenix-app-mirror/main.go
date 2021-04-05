@@ -342,7 +342,6 @@ func vlanTaps(ns string, vms, vlans []string) []string {
 
 
 	for _, vm := range vms {
-		log.Printf("%s", vm)
 		vmSet[vm] = struct{}{}
 	}
 
@@ -382,10 +381,13 @@ func vlanTaps(ns string, vms, vlans []string) []string {
 			vmTaps = strings.Split(s, ", ")
 		}
 
+		log.Printf("in first loop: %s, %s", vm, s)
 		// `vmVLANs` will be a slice of VLAN aliases (ie. EXP_1 (101), EXP_2 (102))
 		for idx, alias := range vmVLANs {
+			log.Printf("in second loop: %s, %s", idx, alias)
 			if match := vlanAliasRegex.FindStringSubmatch(alias); match != nil {
 				// `vlans` will be a slice of VLAN IDs (ie. 101, 102)
+				log.Print("found match")
 				for _, id := range vlans {
 					if match[2] == id {
 						taps = append(taps, vmTaps[idx])
@@ -408,9 +410,9 @@ func buildMirrorCommand(ns, name, bridge, port string, vms, vlans []string) []st
 	taps := vlanTaps(ns, vms, vlans)
 
 	for idx, tap := range taps {
-		log.Printf("%s %s", idx, tap)
+		log.Printf("%s, %s", idx, tap)
 		id := fmt.Sprintf("@i%d", idx)
-
+		log.Printf("%s")
 		ids = append(ids, id)
 		command = append(command, fmt.Sprintf(`--id=%s get port %s`, id, tap))
 	}
